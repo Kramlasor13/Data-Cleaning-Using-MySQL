@@ -10,6 +10,7 @@ select * from layoffs_table;
 -- 4. Remove any column that are unnecessary
 
 
+--creating copy table and inserting values
 
 create table layoffs_table2
 like layoffs_table;
@@ -19,6 +20,7 @@ select * from layoffs_table2;
 insert into layoffs_table2
 select * from layoffs_table;
 
+-- adding row_num to Identify the duplicate data and delete it.
 select *,
 row_number() over
 (partition by company,industry, total_laid_off, percentage_laid_off, `date`) as row_num
@@ -46,6 +48,8 @@ from layoffs_table2
 )
 delete from duplicate_cte
 where row_num > 1;
+
+-- creating new table to insert new column for row_num to delete duplicate data
 
 CREATE TABLE `layoffs_table3` (
   `company` text,
@@ -130,6 +134,8 @@ modify column `date` date;
 select *
 from layoffs_table3;
 
+--selecting and deleting null values that is unnecessary
+
 select *
 from layoffs_table3
 where total_laid_off is null
@@ -172,6 +178,7 @@ where company like 'Bally%';
 select * from layoffs_table3;
 
 
+
 select * from layoffs_table3
 where total_laid_off is null
 and percentage_laid_off is null;
@@ -180,6 +187,7 @@ delete from layoffs_table3
 where total_laid_off is null
 and percentage_laid_off is null;
 
+-- deleting column that is unnecessary
 
 alter table layoffs_table3
 drop column row_num;
